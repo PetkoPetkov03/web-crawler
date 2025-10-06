@@ -330,17 +330,21 @@ int main(int argc, char** argv) {
         int pipefd[2];
         char* buffer[1024];
         ssize_t size;
+
+        if(pipe(pipefd) < 0) exit(1);
         
         pid_t wbexecProcPID = fork();
-        
+
 
         if(wbexecProcPID == 0) {
+
           close(pipefd[0]);
+          
+          printf("[INFO] running process\n````````````\n\n");
           dup2(pipefd[1], STDOUT_FILENO);
-          dup2(pipefd[1], STDERR_FILENO);
-          printf("[INFO] running process\n");
-          execv("./dist/" PROJECT_NAME, 0);
           close(pipefd[1]);
+          
+          execv("./dist/" PROJECT_NAME, 0);
 
           exit(127);
         }else {
@@ -350,10 +354,12 @@ int main(int argc, char** argv) {
           while((size = read(pipefd[0], buffer, sizeof(buffer)-1)) > 0) {
             buffer[size] = '\0';
             printf(ANSI_COLOR_GREEN "%s" ANSI_COLOR_RESET, buffer);
-          }
+          } 
 
           close(pipefd[0]);
           waitpid(wbexecProcPID, 0, 0);
+          
+          printf("\n\n```````````\n\n");
           printf("[INFO] process finished successfully\n");
         }
       }
