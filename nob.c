@@ -143,8 +143,7 @@ int ext_check(char* path) {
 void parse_dirs(path_list* cFiles, DIR* sdir, struct dirent* content, char* path) {
   char* cpath = path;
   while((content = readdir(sdir)) != NULL) {;
-    if(strcmp(content->d_name, ".") == 0 || strcmp(content->d_name, "..") == 0
-       || ext_check(content->d_name) == 1) {
+    if(strcmp(content->d_name, ".") == 0 || strcmp(content->d_name, "..") == 0) {
       continue;
     }
 
@@ -201,7 +200,6 @@ char* cto(const char* cfile)
   if(!dot) return NULL;
 
   int len = dot-ofile;
-  printf("str len: %i\n", len);
   
   char* buffer = (char*)malloc(sizeof(char)*(len+10));
 
@@ -294,7 +292,6 @@ int main(int argc, char** argv) {
     const char* cFileEnr = plist_pop(cFiles);
     char* cFile = strdup(cFileEnr);
     nob_cmd_append(&cmd, "-c", cFile);
-    printf("a\n");
     char* oFile = cto(cFileEnr);
 
     replace_path(oFile, "src", "objs");
@@ -358,6 +355,7 @@ int main(int argc, char** argv) {
 
           close(pipefd[0]);
           waitpid(wbexecProcPID, 0, 0);
+          kill(wbexecProcPID, 0);
           
           printf("\n\n```````````\n\n");
           printf("[INFO] process finished successfully\n");

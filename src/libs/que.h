@@ -14,7 +14,7 @@ typedef struct __fifo_queue__ {
 
 void init_queue(fqueue* queue)
 {
-  queue = (fqueue)malloc(sizeof(fqueue));
+  queue = (fqueue*)malloc(sizeof(fqueue));
 
   if(!queue) {
     perror("");
